@@ -1,10 +1,19 @@
 package com.example.android.architecture.blueprints.todoapp
 
 import android.app.Activity
-import android.widget.Toolbar
+import android.view.Gravity
+import androidx.appcompat.widget.Toolbar
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.Espresso.pressBack
 import androidx.test.espresso.IdlingRegistry
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.contrib.DrawerMatchers.isClosed
+import androidx.test.espresso.contrib.DrawerMatchers.isOpen
+import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import com.example.android.architecture.blueprints.todoapp.data.Task
@@ -64,10 +73,18 @@ class AppNavigationTest {
         dataBindingIdlingResource.monitorActivity(activityScenario)
 
         // 1. Check that left drawer is closed at startup.
+        onView(withId(R.id.drawer_layout)).check(matches(isClosed(Gravity.START)))
 
         // 2. Open drawer by clicking drawer icon.
+        onView(
+            withContentDescription(
+                activityScenario
+                    .getToolbarNavigationContentDescription()
+            )
+        ).perform(click())
 
         // 3. Check if drawer is open.
+        onView(withId(R.id.drawer_layout)).check(matches(isOpen(Gravity.START)))
 
         // When using ActivityScenario.launch(), always call close()
         activityScenario.close()
@@ -83,12 +100,29 @@ class AppNavigationTest {
         dataBindingIdlingResource.monitorActivity(activityScenario)
 
         // 1. Click on the task on the list.
+        onView(ViewMatchers.withText("Up button")).perform(click())
 
         // 2. Click on the edit task button.
+        onView(withId(R.id.edit_task_fab)).perform(click())
 
         // 3. Confirm that if we click Up button once, we end up back at the task details page.
+        onView(
+            withContentDescription(
+                activityScenario
+                    .getToolbarNavigationContentDescription()
+            )
+        ).perform(click())
+        onView(withId(R.id.task_detail_title_text)).check(matches(isDisplayed()))
+
 
         // 4. Confirm that if we click Up button a second time, we end up back at the home screen.
+        onView(
+            withContentDescription(
+                activityScenario
+                    .getToolbarNavigationContentDescription()
+            )
+        ).perform(click())
+        onView(withId(R.id.tasks_container_layout)).check(matches(isDisplayed()))
 
         // When using ActivityScenario.launch(), always call close().
         activityScenario.close()
@@ -105,12 +139,18 @@ class AppNavigationTest {
         dataBindingIdlingResource.monitorActivity(activityScenario)
 
         // 1. Click on the task on the list.
+        onView(withText("Back button")).perform(click())
 
         // 2. Click on the Edit task button.
+        onView(withId(R.id.edit_task_fab)).perform(click())
 
         // 3. Confirm that if we click Back once, we end up back at the task details page.
+        pressBack()
+        onView(withId(R.id.task_detail_title_text)).check(matches(isDisplayed()))
 
         // 4. Confirm that if we click Back a second time, we end up back at the home screen.
+        pressBack()
+        onView(withId(R.id.tasks_container_layout)).check(matches(isDisplayed()))
 
         // When using ActivityScenario.launch(), always call close()
         activityScenario.close()
