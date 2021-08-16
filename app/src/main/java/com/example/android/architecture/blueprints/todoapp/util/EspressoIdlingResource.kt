@@ -1,7 +1,11 @@
 package com.example.android.architecture.blueprints.todoapp.util
 
+import androidx.test.espresso.IdlingResource
 import androidx.test.espresso.idling.CountingIdlingResource
 
+/**
+ * Contains a static reference to [IdlingResource]
+ */
 object EspressoIdlingResource {
 
     private const val RESOURCE = "GLOBAL"

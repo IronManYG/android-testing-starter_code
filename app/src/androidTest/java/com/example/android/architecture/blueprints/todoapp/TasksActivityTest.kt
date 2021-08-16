@@ -67,5 +67,4 @@ class TasksActivityTest {
         // Make sure the activity is closed before resetting the db.
         activityScenario.close()
     }
-
 }
